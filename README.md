@@ -1,6 +1,6 @@
 # SES Log Dashboard
 
-SES Log Dashboard(SES Insights) is a web-based application designed to provide an intuitive interface for viewing and analyzing Amazon Simple Email Service (SES) logs. It allows users to monitor email delivery status, view bounces, troubleshoot issues, and gain insights into email campaigns with ease.
+SES Log Dashboard(SES Insights) is a web-based application designed to provide an intuitive interface for viewing and analyzing Amazon Simple Email Service (SES) logs. It allows users to monitor email delivery status, view bounces, complaints, troubleshoot issues, and gain insights into email campaigns with ease.
 
 ## Features
 
@@ -58,8 +58,6 @@ To get started with Dashboard, follow these steps:
 	**start-date:** Start date for log retrieval (format: YYYY/MM/DD).
 	**end-date:** End date for log retrieval (format: YYYY/MM/DD).
 	**event-type:** Type of event to filter by (e.g., bounce, complaint, delivery).
-
-
 
 ## Contributing
 Contributions are welcome! Please follow these guidelines:
