@@ -1,0 +1,149 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Template to create Lambda function using CloudFormation'
+
+Parameters:
+  CloudWatchGroupName:
+    Description: CloudWatch Group Name for event notifications.
+    Default: /aws/ses/event_logs
+    Type: String
+    AllowedPattern: .+
+    ConstraintDescription: CloudWatch Group Name for event notifications.
+
+  SNSTopicARN:
+    Description: Add SNS Topic ARN.
+    Type: String
+    AllowedPattern: .+
+    ConstraintDescription: Add SNS Topic ARN.
+
+Resources:
+  LambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument: 
+        Version: '2012-10-17'
+        Statement: 
+          - Effect: Allow
+            Principal: 
+              Service: 
+                - lambda.amazonaws.com
+            Action: 
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: cloudwatch_write_policy
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Statement: 
+              - Effect: Allow
+                Action: 
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                  - 'logs:DescribeLogStreams'
+                Resource: 
+                  - 'arn:aws:logs:*:*:log-group:/aws/ses/*'
+      Path: /
+
+  SnsSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: lambda
+      Endpoint: !GetAtt LambdaFunction.Arn
+      TopicArn: !Ref SNSTopicARN
+
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      Principal: sns.amazonaws.com
+      SourceArn: !Ref SNSTopicARN
+      FunctionName: !Ref LambdaFunction
+
+  LambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    DependsOn: LambdaRole
+    Properties:
+      Environment: 
+        Variables: 
+          group_name: !Ref CloudWatchGroupName
+          LOG_LEVEL: 'INFO'
+      Role: !GetAtt LambdaRole.Arn
+      Timeout: 60
+      Handler: index.lambda_handler
+      Runtime: python3.12
+      MemorySize: 128
+      Code:
+        ZipFile: |
+          import boto3
+          import time
+          import os
+          import logging
+          import secrets
+
+          # Initialize Boto3 client
+          client = boto3.client('logs')
+
+          # Get log group from environment variable
+          LOG_GROUP = os.getenv("group_name")
+          if not LOG_GROUP:
+              raise ValueError("Environment variable group_name is not set")
+
+          def lambda_handler(event, context):
+              # Set up logging
+              log_level = os.environ.get('LOG_LEVEL', 'ERROR').upper()
+              if log_level not in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
+                  log_level = 'ERROR'
+              logging.basicConfig(level=log_level)
+
+              # Prepare to aggregate log events
+              log_events = []
+              current_time = int(round(time.time() * 1000))
+              
+              # Collect log events from SNS messages
+              for record in event.get('Records', []):
+                  sns_message = record['Sns']['Message']
+                  log_events.append({
+                      'timestamp': current_time,
+                      'message': sns_message
+                  })
+              
+              if not log_events:
+                  logging.info("No log events to process")
+                  return
+
+              # Create a log stream name for the current day
+              current_date = time.strftime('%Y/%m/%d')
+              LOG_STREAM = f'{current_date}-log-stream'
+
+              # Ensure the log stream exists
+              try:
+                  client.create_log_stream(logGroupName=LOG_GROUP, logStreamName=LOG_STREAM)
+              except client.exceptions.ResourceAlreadyExistsException:
+                  pass
+              
+              # Retrieve the sequence token if it exists
+              response = client.describe_log_streams(
+                  logGroupName=LOG_GROUP,
+                  logStreamNamePrefix=LOG_STREAM
+              )
+              log_streams = response.get('logStreams', [])
+              sequence_token = None
+              if log_streams:
+                  log_stream = log_streams[0]
+                  sequence_token = log_stream.get('uploadSequenceToken')
+              
+              # Send the log events
+              put_log_events_params = {
+                  'logGroupName': LOG_GROUP,
+                  'logStreamName': LOG_STREAM,
+                  'logEvents': log_events
+              }
+              if sequence_token:
+                  put_log_events_params['sequenceToken'] = sequence_token
+              
+              try:
+                  response = client.put_log_events(**put_log_events_params)
+                  logging.info("Put log events response: %s", response)
+              except client.exceptions.InvalidSequenceTokenException as e:
+                  logging.error("Invalid sequence token: %s", e)
+              except Exception as e:
+                  logging.error("Failed to put log events: %s", e)
