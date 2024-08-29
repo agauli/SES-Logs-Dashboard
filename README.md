@@ -49,10 +49,10 @@ To get started with Dashboard, follow these steps:
 	GET /api/get_ses_logs: Retrieve SES logs.
 
 	Parameters:
-	**log-group:** The log group name in SES.
-	**start-date:** Start date for log retrieval (format: YYYY/MM/DD).
-	**end-date:** End date for log retrieval (format: YYYY/MM/DD).
-	**event-type:** Type of event to filter by (e.g., bounce, complaint, delivery).
+	- **log-group:** The log group name in SES.
+	- **start-date:** Start date for log retrieval (format: YYYY/MM/DD).
+	- **end-date:** End date for log retrieval (format: YYYY/MM/DD).
+	- **event-type:** Type of event to filter by (e.g., bounce, complaint, delivery).
 
 ## Contributing
 Contributions are welcome! Please follow these guidelines:
