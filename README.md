@@ -31,10 +31,10 @@ To get started with Dashboard, follow these steps:
 
     For local development, pass environment variables when you run the Docker container. 
     ```bash
-		   docker run -e AWS_ACCESS_KEY_ID=your_access_key_id \
-           -e AWS_SECRET_ACCESS_KEY=your_secret_access_key \
-           -e AWS_DEFAULT_REGION=your_default_region \
-           your_image_name
+	docker run -e AWS_ACCESS_KEY_ID=your_access_key_id \
+    -e AWS_SECRET_ACCESS_KEY=your_secret_access_key \
+    -e AWS_DEFAULT_REGION=your_default_region \
+    your_image_name
     ```
 
 2. **Build and Run the Application**:
@@ -45,9 +45,11 @@ To get started with Dashboard, follow these steps:
 	Open your web browser and navigate to http://localhost:80 for the frontend.
 	
 	Ensure that the backend service is accessible on port 5000.
-		Example Request:
-   `curl "http://localhost:5000/api/get_ses_logs?log-group=/aws/ses/event_logs&start-date=2024/08/26&end-date=2024/08/31&event-type=bounce"`
-   
+
+	Example Request:
+   ```bash
+   curl "http://localhost:5000/api/get_ses_logs?log-group=/aws/ses/event_logs&start-date=2024/08/26&end-date=2024/08/31&event-type=bounce"
+   ```
 	API Endpoints
 	GET /api/get_ses_logs: Retrieve SES logs.
 
@@ -68,9 +70,6 @@ Contributions are welcome! Please follow these guidelines:
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Contact
-For any questions or issues, please contact apps.ashu@gmail.com 
 
 
 
