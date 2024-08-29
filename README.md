@@ -18,7 +18,7 @@ To get started with Dashboard, follow these steps:
 ### Prerequisites
 
 - Send SES events to cloudwatch log. 
-  Deploy cloudformation template ses-log-processing-lambda.yaml to set up an AWS Lambda function that process SES logs and send them to CloudWatch for analysis.
+  Deploy cloudformation template `ses-log-processing-lambda.yaml` to set up an AWS Lambda function that process SES events and send them to CloudWatch for analysis.
 - Docker and Docker Compose installed on your machine.
 
 ### Setup
