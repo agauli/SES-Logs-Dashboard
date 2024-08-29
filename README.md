@@ -9,6 +9,9 @@ SES Log Dashboard(SES Insights) is a web-based application designed to provide a
 - **Real-Time Data**: Monitor email delivery status and other metrics in real-time.
 - **User-Friendly Interface**: Access and analyze logs through a clean, responsive web interface.
 
+## Dashboard
+(img/short-display.png)
+
 ## Getting Started
 
 To get started with Dashboard, follow these steps:
