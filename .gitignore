@@ -1,0 +1,56 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+venv/
+env/
+.Python
+db.sqlite3
+
+# Docker
+# Exclude Docker-related files that are specific to your local environment
+docker-compose.override.yml
+*.env
+*.dockerignore
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage reports
+.coverage
+*.cover
+nosetests.xml
+coverage.xml
+*.gcov
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Mypy
+.mypy_cache/
+.dmypy.json
+
+# Pytest
+.cache/
+
+# Python build
+build/
+dist/
+*.egg-info/
+
+# Flask
+instance/
+
