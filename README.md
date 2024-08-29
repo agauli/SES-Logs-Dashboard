@@ -30,14 +30,7 @@ To get started with Dashboard, follow these steps:
    ```
 2. **Setup AWS credentials to read cloudwatch logs**:
    - The recommended approach is to use an IAM role for secure access.
-
-    For local development, pass environment variables when you run the Docker container. 
-    ```bash
-	docker run -e AWS_ACCESS_KEY_ID=your_access_key_id \
-    -e AWS_SECRET_ACCESS_KEY=your_secret_access_key \
-    -e AWS_DEFAULT_REGION=your_default_region \
-    your_image_name
-    ```
+   - For local development, pass environment variables through Dockerfile. 
 
 2. **Build and Run the Application**:
    ```bash
