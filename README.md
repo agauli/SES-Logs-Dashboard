@@ -18,8 +18,8 @@ To get started with Dashboard, follow these steps:
 ### Prerequisites
 
 - Send SES events to cloudwatch log. 
+  Deploy cloudformation template ses-log-processing-lambda.yaml to set up an AWS Lambda function that process SES logs and send them to CloudWatch for analysis.
 - Docker and Docker Compose installed on your machine.
-- Access to an Amazon SES account with SNS configured to forward logs.
 
 ### Setup
 
@@ -29,7 +29,7 @@ To get started with Dashboard, follow these steps:
    cd SES-Logs-Dashboard
    ```
 2. **Setup AWS credentials to read cloudwatch logs**:
-   - Best practice is to assume IAM role.
+   - The recommended approach is to use an IAM role for secure access.
 
     For local development, pass environment variables when you run the Docker container. 
     ```bash
